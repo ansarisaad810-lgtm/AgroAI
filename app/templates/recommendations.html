@@ -1,0 +1,126 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>3-Way Advisory & DAG Crop Rotation Engine</h2>
+    <span class="badge-dsa">DSA Algorithm Used: {{ dsa_used }}</span>
+
+    <form method="GET" action="{{ url_for('main.recommendations') }}" style="margin-top: 1rem;">
+        <label><strong>Select Advisory Mode:</strong></label>
+        <select id="modeSelect" name="type" onchange="toggleModeInput()" style="margin-bottom: 1rem;">
+            <option value="crop" {% if query_type == 'crop' %}selected{% endif %}>By Crop Mode</option>
+            <option value="soil" {% if query_type == 'soil' %}selected{% endif %}>By Soil Mode</option>
+            <option value="season" {% if query_type == 'season' %}selected{% endif %}>By Season Mode</option>
+        </select>
+
+        <div id="cropModeContainer" style="display: none;">
+            <label><strong>Search or Pick Crop:</strong></label>
+            <input type="text" id="cropSearchInput" onkeyup="filterCropDropdown()" placeholder="Type to search crop..." style="margin-right: 0.5rem;">
+            <select name="value" id="cropDropdown">
+                {% for c in master_crops %}
+                <option value="{{ c.name }}" {% if value == c.name %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div id="soilModeContainer" style="display: none;">
+            <label><strong>Select Soil Type:</strong></label>
+            <select name="value" id="soilDropdown">
+                {% for soil in distinct_soils %}
+                <option value="{{ soil }}" {% if value == soil %}selected{% endif %}>{{ soil }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div id="seasonModeContainer" style="display: none;">
+            <label><strong>Select Season / Weather:</strong></label>
+            <select name="value" id="seasonDropdown">
+                {% for season in distinct_seasons %}
+                <option value="{{ season }}" {% if value == season %}selected{% endif %}>{{ season }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <br>
+        <button type="submit" class="btn btn-green">Get Recommendations</button>
+    </form>
+</div>
+
+{% for crop in results %}
+<div class="card">
+    <h3 style="color: var(--primary-forest);">🌱 Crop Recommendation: {{ crop.name }}</h3>
+    <table>
+        <tr>
+            <th>Recommended Soil Type</th>
+            <td>{{ crop.soil }}</td>
+        </tr>
+        <tr>
+            <th>Best Season & Planting Window</th>
+            <td>{{ crop.season }} (Planting Time: {{ crop.best_time }})</td>
+        </tr>
+        <tr>
+            <th>Farming Technique</th>
+            <td>{{ crop.technique }}</td>
+        </tr>
+        <tr>
+            <th>Budget Tools Required</th>
+            <td>{{ crop.tools }}</td>
+        </tr>
+    </table>
+</div>
+{% endfor %}
+
+{% if rotation_options %}
+<div class="card">
+    <h3>🔄 Recommended Next Crops for Soil Health (DAG Rotation Graph)</h3>
+    <p>Planting these successor crops after <strong>{{ value }}</strong> restores soil nitrogen and breaks pest cycles:</p>
+    <ul>
+        {% for opt in rotation_options %}
+        <li style="margin-bottom: 0.5rem;">
+            <strong>{{ opt.crop }}</strong> — <span class="status-green">Soil Restoration Benefit: {{ opt.benefit }}%</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<script>
+function toggleModeInput() {
+    const mode = document.getElementById('modeSelect').value;
+    const cropCont = document.getElementById('cropModeContainer');
+    const soilCont = document.getElementById('soilModeContainer');
+    const seasonCont = document.getElementById('seasonModeContainer');
+
+    cropCont.style.display = 'none';
+    soilCont.style.display = 'none';
+    seasonCont.style.display = 'none';
+
+    document.getElementById('cropDropdown').disabled = true;
+    document.getElementById('soilDropdown').disabled = true;
+    document.getElementById('seasonDropdown').disabled = true;
+
+    if (mode === 'crop') {
+        cropCont.style.display = 'block';
+        document.getElementById('cropDropdown').disabled = false;
+    } else if (mode === 'soil') {
+        soilCont.style.display = 'block';
+        document.getElementById('soilDropdown').disabled = false;
+    } else if (mode === 'season') {
+        seasonCont.style.display = 'block';
+        document.getElementById('seasonDropdown').disabled = false;
+    }
+}
+
+function filterCropDropdown() {
+    const input = document.getElementById('cropSearchInput').value.toLowerCase();
+    const select = document.getElementById('cropDropdown');
+    const options = select.getElementsByTagName('option');
+
+    for (let i = 0; i < options.length; i++) {
+        const txt = options[i].text.toLowerCase();
+        options[i].style.display = txt.includes(input) ? '' : 'none';
+    }
+}
+
+window.onload = toggleModeInput;
+</script>
+{% endblock %}

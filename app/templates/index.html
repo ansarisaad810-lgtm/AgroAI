@@ -1,0 +1,78 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Farmer Dashboard & Priority Planner</h2>
+    <span class="badge-dsa">DSA Algorithms Active: Min-Heap Priority Queue | Multi-dim Array NPK Lookup | FIFO Audio Queue</span>
+    
+    <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+        <!-- Voice Assistant Card -->
+        <div style="flex: 1; min-width: 300px;" class="card">
+            <h3>🎙️ Voice & Text Agro Assistant (Speech Enabled)</h3>
+            <p><strong>Supported Languages:</strong> Hindi, Chhattisgarhi, English</p>
+            <textarea id="voiceInput" rows="3" style="width: 100%;" placeholder="Ask in voice or text (e.g., When should I plant Rice?)..."></textarea>
+            <br><br>
+            <button class="btn" onclick="startVoice()">🎙️ Speak (Voice)</button>
+            <button class="btn btn-green" onclick="sendToGroq()">Send to Groq AI</button>
+            
+            <div id="aiResponse" class="chat-response-box">
+                <em>Response will appear here...</em>
+            </div>
+        </div>
+
+        <!-- Priority Queue Task Schedule -->
+        <div style="flex: 1; min-width: 300px;" class="card">
+            <h3>⏳ Urgent Priority Field Tasks (Min-Heap)</h3>
+            {% for task in urgent_tasks %}
+            <div style="border-left: 4px solid var(--secondary-gold); padding-left: 0.5rem; margin-bottom: 0.5rem;">
+                <strong>{{ task.title }}</strong> [{{ task.category }}]<br>
+                <span class="{% if task.days <= 1 %}status-red{% else %}status-yellow{% endif %}">
+                    ⏰ Due in {{ task.days }} day(s)
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- NPK Calculator Module -->
+<div class="card">
+    <h3>🧪 Soil N-P-K & Fertilizer Dosage Calculator</h3>
+    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <label>Crop:</label>
+        <select id="npkCrop">
+            <option value="wheat">Wheat</option>
+            <option value="rice">Rice</option>
+            <option value="tomato">Tomato</option>
+            <option value="potato">Potato</option>
+        </select>
+        <label>Land Area (Acres):</label>
+        <input type="number" id="npkAcres" value="2" step="0.5" style="width: 80px;">
+        <button class="btn btn-green" onclick="calculateFertilizer()">Calculate Dosage</button>
+    </div>
+    <div id="npkResult" style="margin-top: 1rem; padding: 0.5rem; border: 1px dashed #1A202C; background: #FFF; border-radius: 4px;">
+        <em>Select crop and land area to calculate urea/DAP requirements...</em>
+    </div>
+</div>
+
+<div class="card">
+    <h3>My Saved Crops List</h3>
+    <ul id="userCropList">
+        {% for crop in user_crops %}
+            <li style="margin-bottom: 0.5rem;">
+                <strong>{{ crop }}</strong> 
+                <button class="btn btn-red" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;" onclick="removeCrop('{{ crop }}')">Remove (Pop)</button>
+            </li>
+        {% else %}
+            <li>No crops added yet. Select below to add!</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Add Crop to My List</h4>
+    <select id="cropSelect">
+        {% for crop in master_crops %}
+            <option value="{{ crop.name }}">{{ crop.name }} ({{ crop.season }})</option>
+        {% endfor %}
+    </select>
+    <button class="btn btn-green" onclick="addCrop()">Add Crop (Push)</button>
+</div>
+{% endblock %}

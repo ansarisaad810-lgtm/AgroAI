@@ -1,0 +1,41 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Equipment & Budget Tools Calculator</h2>
+    <span class="badge-dsa">DSA Algorithm Used: {{ dsa_used }}</span>
+
+    <form method="POST" action="{{ url_for('main.tools_calculator') }}" style="margin-top: 1rem;">
+        <label><strong>Enter Maximum Farming Tool Budget (₹):</strong></label>
+        <input type="number" name="budget" value="{{ budget }}" style="width: 200px;" required>
+        <button type="submit" class="btn btn-green">Filter Affordable Tools</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Recommended Machinery / Tools (Within ₹{{ budget }} Budget)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Tool / Machinery Name</th>
+                <th>Category</th>
+                <th>Cost (₹)</th>
+                <th>Affordability Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tool in tools %}
+            <tr>
+                <td><strong>{{ tool.name }}</strong></td>
+                <td>{{ tool.type }}</td>
+                <td>₹{{ tool.cost }}</td>
+                <td class="status-green">🟢 Within Budget</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="status-red">No tools available under ₹{{ budget }}. Try increasing your budget!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroAI - Farmer Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>🌾 AgroAI</h1>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="location-widget">
+                📍 <span id="locationDisplay">Bhilai, Chhattisgarh</span>
+                <button class="btn btn-sm" onclick="autoDetectLocation()">🎯 GPS</button>
+                <select id="locationSelect" onchange="manualLocationSelect(this.value)" style="padding: 0.2rem; font-size: 0.85rem;">
+                    <option value="Bhilai, Chhattisgarh">Bhilai, CG</option>
+                    <option value="Raipur, Chhattisgarh">Raipur, CG</option>
+                    <option value="Durg, Chhattisgarh">Durg, CG</option>
+                    <option value="Rajnandgaon, Chhattisgarh">Rajnandgaon, CG</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                </select>
+            </div>
+
+            <div>
+                <a href="{{ url_for('main.index') }}">Dashboard</a>
+                <a href="{{ url_for('main.recommendations') }}">Crop Advisory</a>
+                <a href="{{ url_for('main.tools_calculator') }}">Budget Tools</a>
+                <a href="{{ url_for('main.ledger') }}">Ledger</a>
+                <a href="{{ url_for('main.market') }}">Market Rates</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

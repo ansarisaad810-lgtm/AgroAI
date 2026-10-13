@@ -1,0 +1,36 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Live Market Prices (Mandi Rates)</h2>
+    <span class="badge-dsa">DSA Algorithm Used: {{ dsa_used }}</span>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Crop Name</th>
+                <th>Mandi Yard Location</th>
+                <th>Rate per Quintal (₹)</th>
+                <th>Price Trend</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in market_data %}
+            <tr>
+                <td><strong>{{ item.crop }}</strong></td>
+                <td>{{ item.mandi }}</td>
+                <td>₹{{ item.price }}</td>
+                <td>
+                    {% if item.status == 'up' %}
+                        <span class="status-green">🟢 Rising</span>
+                    {% elif item.status == 'down' %}
+                        <span class="status-red">🔴 Falling</span>
+                    {% else %}
+                        <span class="status-yellow">🟡 Stable</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

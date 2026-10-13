@@ -1,0 +1,40 @@
+﻿# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Databases & Local Data
+*.db
+*.sqlite3
+app/database/agro_ai.db
+
+# Python Bytecode & Cache Directories
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Temporary / Local Generator & Test Files
+make_test.py
+test_suite.py
+make_test.py.bak
+structure.txt
+
+# Editor & IDE Directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+desktop.ini
